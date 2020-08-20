@@ -1,0 +1,125 @@
+<html>
+	<head>
+		<style>
+			canvas{
+				   border  : 1px solid black;
+				  }
+		</style>
+		 <canvas id="canvas" width="1350" height = "700"></canvas>
+	</head>
+	<body>
+	<script>
+		// global variables 
+		var balls= new Array();
+		var ball = null;
+		var x,i,color;
+		
+		//global constants 
+		const COLORS=["red","orange","yellow","green","pink","purple","cyan","magenta","brown","blue"]
+		const canvas = document.getElementById("canvas");
+		const context = canvas.getContext('2d');
+		const rect = canvas.getBoundingClientRect();
+		
+		// class creates new balls
+		class Ball {
+			constructor(centerX,centerY,color,clicked){
+				this._centerX=centerX;
+				this._centerY=centerY;
+				this._color=color;
+				this._clicked=clicked;
+			}
+			get centerX() {
+				return this._centerX;
+			}
+			set centerX(newCenterX) {
+				this._centerX=newCenterX;
+			}
+			get centerY() {
+				return this._centerY;
+			}
+			set centerY(newCenterY) {
+				this._centerY=newCenterY;
+			}
+			get color() {
+				return this._color;
+			}
+			set color(newColor) {
+				this._color=newColor;
+			}
+			get clicked() {
+				return this._clicked;
+			}
+			set clicked(newClicked) {
+				this._clicked=newClicked;
+			}
+		}
+		
+		
+		
+		
+		// update screen every 0.45 of a second
+		setInterval(updateScreen,450);
+		
+		// listen for "click" event
+		canvas.addEventListener("click",function(event){
+		
+		// check if each ball has been clicked
+		for (i=0;i<=balls.length-1;i++){
+			if((((event.clientX-rect.left)-balls[i].centerX)**2)+(((event.clientY-rect.top)-balls[i].centerY)**2)<1600){
+				balls[i].clicked=true;
+			}
+			
+			}
+		
+		});
+		
+		//
+		
+		
+		function updateScreen(){
+		
+
+			context.clearRect(0,0, 1350,700);
+			
+			// create each ball 
+			x=Math.floor((Math.random() * 1349) + 1);
+			color=Math.floor(Math.random() * 9);
+			ball = new Ball(x,-50,COLORS[color],false);
+			balls.push(ball);
+			
+			// redraw each ball 
+			for(i=0;i<=balls.length-1;i++){
+				
+				if(!balls[i].clicked){
+					context.beginPath();
+					context.fillStyle=balls[i].color;
+					context.arc(balls[i].centerX,balls[i].centerY,40,0,2*Math.PI);
+					context.closePath();
+					context.fill();
+				}
+			}
+			
+			// move each ball forward
+			for(i=0;i<=balls.length-1;i++){
+				balls[i].centerY+=10;
+				
+			}
+			// delete Ball object properties to save space in memory 
+			for(i=0;i<=balls.length-1;i++){
+				
+				// game over condition
+				if(balls[i].centerY>750 && !(balls[i].clicked)){
+					
+					// reset game 
+					location.reload();
+
+
+				}
+			}
+		}
+		
+		
+		
+	</script>
+	</body>
+	</html>
